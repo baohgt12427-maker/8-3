@@ -248,6 +248,31 @@
                 transform: translate(-50%, -50%) scale(1); width: 92%; min-height: auto;
             }
         }
+
+        /* ===== HEART FOLLOW MOUSE ===== */
+        .mouse-heart {
+            position: fixed;
+            pointer-events: none;
+            font-size: 25px;
+            z-index: 9999;
+            animation: floatUp 1.2s ease-out forwards;
+            text-shadow:
+            0 0 8px #ff4da6,
+            0 0 15px #ff85c1,
+            0 0 25px #ffb3d9;
+        }
+        
+        @keyframes floatUp {
+            0% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -150px) scale(1.8);
+                opacity: 0;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -496,6 +521,21 @@
             clearInterval(autoSlide);
             changeImage();
             autoSlide = setInterval(changeImage, 3500);
+        });
+        /* ===== TRÁI TIM THEO CHUỘT ===== */
+        document.addEventListener("mousemove", function(e) {
+            if (Math.random() > 0.7) return;
+            const heart = document.createElement("div");
+            heart.className = "mouse-heart";
+            const hearts = ["💗"];
+            heart.innerHTML =
+                hearts[Math.floor(Math.random()*hearts.length)];
+            heart.style.left = e.clientX + "px";
+            heart.style.top = e.clientY + "px";
+            document.body.appendChild(heart);
+            setTimeout(() => {
+                heart.remove();
+            }, 1000);
         });
     </script>
 </body>
