@@ -325,6 +325,55 @@
         </div>
     </div>
 
+    <!-- ===== NÚT CÒN NỮA ===== -->
+    <button id="continueBtn" style="
+        display:none;
+        position: fixed;
+        right: 40px; 
+        bottom: 120px; 
+        padding:8px 18px;
+        font-size:14px;
+        border: none; 
+        border-radius: 20px; 
+        background:#ff4d88; 
+        color: white; 
+        cursor: pointer; 
+        z-index: 9999;
+    ">
+    Còn nữa nhé
+    </button>
+
+    <!-- ===== KHUNG CÂU HỎI ===== -->
+    <div id="questionOverlay" style="
+        display:none;
+        position:fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background:rgba(255,240,245,0.95);
+        backdrop-filter:blur(10px);
+        z-index:10001;
+        justify-content:center;
+        align-items:center;
+        flex-direction:column;
+        text-align:center;
+        padding:20px;
+        pointer-events: auto;
+     ">
+        <div id="questionText" style="
+            font-family:'Playfair Display',serif;
+            font-size:2rem;
+            color:#d6336c;
+            min-height:60px;
+        "></div>
+
+        <div id="answerButtons" style="display:none;margin-top:30px;">
+            <button id="yesBtn" style="padding:10px 25px;margin:10px;border:none;border-radius:25px;background:#ff4d6d;color:white;">Yes</button>
+            <button id="noBtn" style="padding:10px 25px;margin:10px;border:none;border-radius:25px;background:#888;color:white;">No</button>
+        </div>
+    </div>
+
     <div class="heavy-rain-container" id="heavyRainContainer"></div>
     <audio id="bgMusic"></audio> 
 
@@ -454,9 +503,9 @@
         }, {once: true});
 
         // --- SỰ KIỆN MỞ THƯ & MƯA TIM BẤT NGỜ ---
-        let isOpening = false;
+        let tú = false;
         surpriseBtn.addEventListener('click', () => {
-            if (isOpening) return; isOpening = true;
+            if (tú) return; tú = true;
             letterModal.style.display = 'flex';
             setTimeout(() => {
                 letterModal.style.opacity = '1';
@@ -476,6 +525,9 @@
                 letterModal.style.display = 'none';
                 envelopeWrapper.classList.remove('open', 'fully-opened');
                 isOpening = false;
+                // HIỆN NÚT CÒN NỮA
+                continueBtn.style.display = "block";
+
             }, 500);
         });
 
@@ -537,6 +589,112 @@
                 heart.remove();
             }, 1000);
         });
+
+        // ===== HIỆN NÚT SAU KHI ĐÓNG THƯ =====
+        const continueBtn = document.getElementById("continueBtn");
+        const questionOverlay = document.getElementById("questionOverlay");
+        const questionText = document.getElementById("questionText");
+        const answerButtons = document.getElementById("answerButtons");
+
+        // ===== TYPE EFFECT GIỐNG PHẦN "CHÀO CẬU" =====
+        const questionLine = [
+            "Do we still have a chance to start again?", 
+            " Chỉ được chọn 1 thôi nhé! "
+        ];
+        let qIndex = 0;
+
+        function typeQuestion() {
+            if (qIndex < questionLine.length) {
+                questionText.innerHTML += questionLine[qIndex];
+                qIndex++;
+                setTimeout(typeQuestion, 70);
+            } else {
+                answerButtons.style.display = "block";
+            }
+        }
+        
+        continueBtn.addEventListener("click", () => {
+            continueBtn.style.display = "none";
+            questionOverlay.style.display = "flex";
+            questionText.innerHTML = "";
+            qIndex = 0;
+            setTimeout(typeQuestion, 500);
+        });
+        
+        /// ===== YES =====
+        document.getElementById("yesBtn").addEventListener("click", () => {
+
+            alert("Cảm ơn Tú đã cho tớ thêm cơ hội! Hy vọng chúng ta sẽ còn nhiều điều đẹp phía trước. 💖");
+            
+        });
+
+        // ===== NO =====
+        document.getElementById("noBtn").addEventListener("click", () => {
+
+            // Random 6 hoặc 7
+            const noSongs = ["6.mp3", "7.mp3"];
+            const randomIndex = Math.floor(Math.random() * noSongs.length);
+
+            // Đổi nhạc
+            audio.src = noSongs[randomIndex];
+            audio.play().catch(e => console.log("Lỗi phát:", e));
+
+            // Ẩn overlay câu hỏi
+            questionOverlay.style.display = "none";
+
+            // Tạo màn hình kết thúc
+            const finalScreen = document.createElement("div");
+            finalScreen.style.position = "fixed";
+            finalScreen.style.top = "0";
+            finalScreen.style.left = "0";
+            finalScreen.style.width = "100%";
+            finalScreen.style.height = "100vh";
+            finalScreen.style.background = "#ffe4f2";
+            finalScreen.style.display = "flex";
+            finalScreen.style.flexDirection = "column";
+            finalScreen.style.alignItems = "center";
+            finalScreen.style.fontFamily = "'Playfair Display', serif";
+            finalScreen.style.color = "#d6336c";
+            finalScreen.style.fontSize = "1.8rem";
+            finalScreen.style.textAlign = "center";
+            finalScreen.style.padding = "20px";
+            finalScreen.style.zIndex = "20000";
+
+            const finalText = document.createElement("div");
+            finalScreen.appendChild(finalText);
+            document.body.appendChild(finalScreen);
+
+            const lines = [
+                "Xin lỗi vì đã làm phiền Tú với những điều này.",
+                "Tớ hiểu nếu Tú không muốn tiếp tục.",
+                "Tớ sẽ tôn trọng quyết định của Tú.",
+                "Từ giờ, tớ sẽ không làm phiền Tú nữa đâu.",
+                "Nếu sau này, Tú có thích một người, thì tớ hy vọng người đó sẽ mang lại cho Tú thật nhiều hạnh phúc.",
+                "Đừng như kết thúc này nhé, hãy luôn vui vẻ và hạnh phúc Tú nhé!",
+                "Bye bye Tú! ❤️"
+            ];
+
+            let l = 0;
+            let c = 0;
+
+            function typeFinal() {
+                if (l < lines.length) {
+                    if (c < lines[l].length) {
+                        finalText.innerHTML += lines[l].charAt(c);
+                        c++;
+                        setTimeout(typeFinal, 60);
+                    } else {
+                        finalText.innerHTML += "<br><br>";
+                        l++;
+                        c = 0;
+                        setTimeout(typeFinal, 800);
+                    }
+                }
+            }
+
+            typeFinal();
+        });
+
     </script>
 </body>
 </html>
