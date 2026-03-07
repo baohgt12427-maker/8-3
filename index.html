@@ -68,11 +68,12 @@
         .gift-box.show {
             display: block; opacity: 1; transform: scale(1);
         }
-        .gift-box h2 { font-family: 'Great Vibes', cursive; font-size: 3rem; color: white; text-shadow: 2px 2px 0 #b34b6b; }
+        .gift-box h2 { font-family: 'Great Vibes', cursive; font-size: 3rem; margin:10px 0 5px 0; color: white; text-shadow: 2px 2px 0 #b34b6b; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
         /* --- NỘI DUNG CHÍNH --- */
         #main-content {
+            padding-top:10px;
             width: 100%; max-width: 1100px; text-align: center;
             z-index: 5; opacity: 0; transition: opacity 0.5s;
         }
@@ -418,6 +419,29 @@
             }
         }
 
+        #musicNow{
+            font-family:'Playfair Display', serif;
+            font-size:1.2rem;
+            margin:0;
+            color:#d6336c;
+            margin-bottom:15px;
+            text-shadow:0 0 8px #ff9eb5;
+        }
+
+        #exitFullscreenBtn{
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 18px;
+            font-size: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #ff4f90;
+            color: white;
+            cursor: pointer;
+            z-index: 20001;
+        }
+
     </style>
 </head>
 <body>
@@ -446,6 +470,9 @@
 
     <div id="main-content">
         <h1>Happy Women's Day 8/3</h1>
+        <div id="musicNow">
+            🎵 Đang phát: <span id="songName">...</span>
+        </div>
         <div class="heart-wrapper" id="heartImage">
             <img id="slideshowImg" src="https://cdn.tgdd.vn/Files/2022/10/25/1481443/mat-ma-tinh-yeu-bang-so-de-to-tinh-nguoi-ay-cuc-y-nghia-202210251314409284.jpg" alt="Ảnh cặp đôi">
         </div>
@@ -482,6 +509,9 @@
         <!-- ===== KHUNG CÂU HỎI (KHÔNG CÓ NÚT) ===== -->
 
     <div class="heavy-rain-container" id="heavyRainContainer"></div>
+    <button id="exitFullscreenBtn" onclick="exitFullscreen()" style="display:none;">
+        Thoát toàn màn hình
+    </button>
     <audio id="bgMusic" autoplay></audio> 
 
     <script>
@@ -549,25 +579,27 @@
 
         // --- DANH SÁCH NHẠC ---
         const playlist = [
-            "1.mp3",
-            "2.mp3", 
-            "3.mp3", 
-            "4.mp3",  
-            "5.mp3",
-            "6.mp3"
+            "Từng ngày yêu em.mp3",
+            "Kẹo bông gòn.mp3", 
+            "100 years love.mp3", 
+            "Đừng làm trái tim anh đau.mp3",  
+            "Nơi này có anh.mp3",
+            "Em băng qua.mp3"
         ];
+        const songName = document.getElementById("songName");
         let currentSongIndex = Math.floor(Math.random() * playlist.length);
 
         // Hàm dùng để phát nhạc chính xác
         function playNewSong(index) {
             currentSongIndex = index;
             audio.src = playlist[currentSongIndex];
+            songName.textContent = playlist[currentSongIndex];
             audio.load(); // Buộc trình duyệt tải file mới
             audio.play().catch(e => console.log("Chờ tương tác để phát nhạc"));
         }
         
         // Khởi tạo bài hát đầu tiên
-        audio.src = playlist[currentSongIndex];
+        playNewSong(currentSongIndex);
 
         // Sự kiện khi hết bài
         audio.addEventListener('ended', () => {
@@ -722,7 +754,8 @@
             letterModal.style.opacity = '0';
             setTimeout(() => {
                 letterModal.style.display = 'none';
-                envelopeWrapper.classList.remove('open', 'fully-opened');           
+                envelopeWrapper.classList.remove('open', 'fully-opened');  
+                document.getElementById("exitFullscreenBtn").style.display = "block";         
             }, 500);
         });
 
@@ -920,6 +953,35 @@
                     },800);
                 }
             },1000);
+        }
+
+        function openFullscreen() {
+            let elem = document.documentElement;
+
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+        }
+        document.addEventListener("click", function () {
+            openFullscreen();
+        }, { once: true });
+
+        function openFullscreen() {
+            let elem = document.documentElement;
+
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            }
+        }
+
+        function exitFullscreen(){
+            if(document.exitFullscreen){
+                document.exitFullscreen();
+            }
         }
     </script>
 </body>
