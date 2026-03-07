@@ -444,6 +444,7 @@
     </style>
 </head>
 <body>
+    <audio id="bgMusic"></audio>
 
     <canvas id="matrixCanvas"></canvas>
     <div id="countdownMatrix"></div>
@@ -511,7 +512,6 @@
     <button id="exitFullscreenBtn" onclick="exitFullscreen()" style="display:none;">
         Thoát toàn màn hình
     </button>
-    <audio id="bgMusic" autoplay></audio> 
 
     <script>
         const audio = document.getElementById('bgMusic');
@@ -572,7 +572,6 @@
         window.onload = () => {
             setTimeout(typeWriter, 1000);
             audio.volume = 0.6;
-            audio.play().catch(()=>{});
         };
 
 
@@ -934,6 +933,7 @@
 
         function startCountdown(callback){
             const countdown = document.getElementById("countdownMatrix");
+            const countdownMatrix = document.getElementById("countdownMatrix");
             let count=3;
             countdown.style.display="block";
             const timer=setInterval(()=>{
@@ -964,17 +964,10 @@
                 elem.msRequestFullscreen();
             }
         }
-        document.addEventListener("click", function () {
+        document.getElementById("openGift").addEventListener("click", () => {
+            audio.play().catch(()=>{});
             openFullscreen();
         }, { once: true });
-
-        function openFullscreen() {
-            let elem = document.documentElement;
-
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            }
-        }
 
         function exitFullscreen(){
             if(document.exitFullscreen){
